@@ -9,14 +9,17 @@ import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+
+
 import utilitarios.LeitorEnlacesConfig;
 import utilitarios.LeitorRoteadorConfig;
 
 
 
 
-public class Roteador extends TimerTask{
-	final int INFINITY = 999;
+public class Roteador extends TimerTask {
+	final int INFINITY = 99;
 	private String id;
 	private String porta;
 	private String IP;
@@ -138,7 +141,7 @@ public class Roteador extends TimerTask{
 	
 	
 	public String geraTabelaString() {
-		String saida = this.getId() + "$"; //o cifrao serve pra separar o id do restante dos dados
+		String saida = this.getId() + "$";
 		for ( String roteador : todosOsRoteadores() ) {
 			saida += this.tabela.getMapaDistancia().get(roteador) +
 			"-" + rotas.get(roteador)+ " ";
@@ -152,7 +155,7 @@ public class Roteador extends TimerTask{
 		StringTokenizer st = new StringTokenizer(dados);
 		
 		for ( String roteador : todosOsRoteadores() ) {
-			StringTokenizer distEsalt = new StringTokenizer(st.nextToken(), "-"); //pra separar os prox. saltos
+			StringTokenizer distEsalt = new StringTokenizer(st.nextToken(), "-");
 			
 			
 			int distanciaTabelaRemota = Integer.parseInt( distEsalt.nextToken() );

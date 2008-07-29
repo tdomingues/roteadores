@@ -6,6 +6,10 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 
+
+
+
+
 /**
  * 
  * Classe que representa um hospedeiro do tipo cliente
@@ -13,9 +17,9 @@ import java.net.UnknownHostException;
  * @author Pablo
  *
  */
-public class Cliente extends Thread{
+public class Cliente extends Thread {
 	
-	final int INFINITY = 999;
+	final int INFINITY = 99;
 	
 	private String ipServidor;
 	private String portaServidor;

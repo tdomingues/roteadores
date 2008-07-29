@@ -4,15 +4,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+
+
+
 import utilitarios.LeitorEnlacesConfig;
 import utilitarios.LeitorRoteadorConfig;
 
 
 
 public class TabelaRoteamento{
-	final int INFINITY = 999;
+	final int INFINITY = 99;
 	
-	private String id;
+	private String idTab;
 
 	private LeitorRoteadorConfig manipuladorRot;
 
@@ -25,7 +28,7 @@ public class TabelaRoteamento{
 		manipuladorRot = LeitorRoteadorConfig.getInstance();
 		manipuladorEn = LeitorEnlacesConfig.getInstance();
 		mapaDistancias = new HashMap<String, Integer>();
-		this.id = id;
+		this.idTab = id;
 	}
 
 	
@@ -34,7 +37,7 @@ public class TabelaRoteamento{
 		while (it.hasNext()) {
 			
 			String id = (String) it.next();
-			if (id.equals(id))
+			if (id.equals(idTab))
 				mapaDistancias.put(id, 0);
 			else
 				mapaDistancias.put(id, INFINITY);
@@ -59,12 +62,12 @@ public class TabelaRoteamento{
 
 	
 	public String getId() {
-		return id;
+		return idTab;
 	}
 
 	
 	public void setId(String id) {
-		this.id = id;
+		this.idTab = id;
 	}
 
 	
