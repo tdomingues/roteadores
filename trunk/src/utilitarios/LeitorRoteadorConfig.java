@@ -10,24 +10,24 @@ import java.util.TreeMap;
 
 
 
-public class ManipuladorRoteadoresConfig {
+public class LeitorRoteadorConfig {
 	
 	private List<String> conteudo; 
 	private String nome = "roteador.config";
 	private static Map<String, List> mapa;
-	private static ManipuladorRoteadoresConfig instancia;
+	private static LeitorRoteadorConfig instancia;
 	
 	
-	private ManipuladorRoteadoresConfig() {
+	private LeitorRoteadorConfig() {
 		mapa = new TreeMap<String, List>();
-		conteudo = LeitorArquivos.leiaArquivo(nome);
+		conteudo = LeitorArquivo.leiaArquivo(nome);
 		mapeiaConteudo();
 	}
 	
 	
-	public static ManipuladorRoteadoresConfig getInstance(){
+	public static LeitorRoteadorConfig getInstance(){
 		if (instancia == null){
-			instancia = new ManipuladorRoteadoresConfig();
+			instancia = new LeitorRoteadorConfig();
 		}
 		return instancia;
 	}

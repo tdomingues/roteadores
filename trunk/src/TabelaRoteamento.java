@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import utilitarios.ManipuladorEnlacesConfig;
-import utilitarios.ManipuladorRoteadoresConfig;
+import utilitarios.LeitorEnlacesConfig;
+import utilitarios.LeitorRoteadorConfig;
 
 
 
@@ -14,16 +14,16 @@ public class TabelaRoteamento{
 	
 	private String id;
 
-	private ManipuladorRoteadoresConfig manipuladorRot;
+	private LeitorRoteadorConfig manipuladorRot;
 
-	private ManipuladorEnlacesConfig manipuladorEn;
+	private LeitorEnlacesConfig manipuladorEn;
 
 	private Map<String, Integer> mapaDistancias;
 
 	
 	public TabelaRoteamento(String id) {
-		manipuladorRot = ManipuladorRoteadoresConfig.getInstance();
-		manipuladorEn = ManipuladorEnlacesConfig.getInstance();
+		manipuladorRot = LeitorRoteadorConfig.getInstance();
+		manipuladorEn = LeitorEnlacesConfig.getInstance();
 		mapaDistancias = new HashMap<String, Integer>();
 		this.id = id;
 	}
@@ -45,7 +45,7 @@ public class TabelaRoteamento{
 	
 	public String toString() {
 		String saida = "\n" + "Rot" + this.getId() + "\n";
-		int numRot = ManipuladorRoteadoresConfig.numeroRoteadores();
+		int numRot = LeitorRoteadorConfig.numeroRoteadores();
 		for (int i = 1; i < numRot + 1; i++) {
 			saida += "|  " + i + " ";
 		}
@@ -70,7 +70,7 @@ public class TabelaRoteamento{
 	
 	public String compactaTabela() {
 		String saida = this.getId() + "$";
-		int numRot = ManipuladorRoteadoresConfig.numeroRoteadores();
+		int numRot = LeitorRoteadorConfig.numeroRoteadores();
 		for (int i = 1; i < numRot + 1; i++) {
 			saida += mapaDistancias.get(String.valueOf(i)) + " ";
 		}

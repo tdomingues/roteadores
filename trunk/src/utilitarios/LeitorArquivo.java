@@ -11,9 +11,9 @@ import java.util.List;
 import excecoes.LeitorArquivosException;
 
 
-public class LeitorArquivos {
+public class LeitorArquivo {
 	
-	public LeitorArquivos() {
+	public LeitorArquivo() {
 	}
 	
 	

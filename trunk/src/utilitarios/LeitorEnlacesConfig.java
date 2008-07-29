@@ -10,26 +10,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-public class ManipuladorEnlacesConfig {
+public class LeitorEnlacesConfig {
 	final int INFINITY = 999;
 	
 	
 	private List<String> conteudo; 
 	private final String nome = "enlaces.config";
 	private Map<List, String> mapa; 
-	private static ManipuladorEnlacesConfig instancia;
+	private static LeitorEnlacesConfig instancia;
 	
 	
-	private ManipuladorEnlacesConfig(){
+	private LeitorEnlacesConfig(){
 		mapa = new HashMap<List, String>();
-		conteudo = LeitorArquivos.leiaArquivo(nome);
+		conteudo = LeitorArquivo.leiaArquivo(nome);
 		this.mapeiaConteudo();
 	}
 	
 	
-	public static ManipuladorEnlacesConfig getInstance(){
+	public static LeitorEnlacesConfig getInstance(){
 		if (instancia == null){
-			instancia = new ManipuladorEnlacesConfig();
+			instancia = new LeitorEnlacesConfig();
 		}
 		return instancia;
 		
