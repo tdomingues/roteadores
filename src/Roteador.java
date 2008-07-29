@@ -9,8 +9,8 @@ import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import utilitarios.ManipuladorEnlacesConfig;
-import utilitarios.ManipuladorRoteadoresConfig;
+import utilitarios.LeitorEnlacesConfig;
+import utilitarios.LeitorRoteadorConfig;
 
 
 
@@ -21,8 +21,8 @@ public class Roteador extends TimerTask{
 	private String porta;
 	private String IP;
 	private TabelaRoteamento tabela; 
-	private ManipuladorRoteadoresConfig manipuladorRot;
-	private ManipuladorEnlacesConfig manipuladorEn;
+	private LeitorRoteadorConfig manipuladorRot;
+	private LeitorEnlacesConfig manipuladorEn;
 	private Servidor server;
 	
 	private Map<String,String> statusVizinhos;
@@ -31,8 +31,8 @@ public class Roteador extends TimerTask{
 
 	public Roteador(String id) {
 		this.id = id;
-		manipuladorRot = ManipuladorRoteadoresConfig.getInstance(); 
-		manipuladorEn = ManipuladorEnlacesConfig.getInstance(); 
+		manipuladorRot = LeitorRoteadorConfig.getInstance(); 
+		manipuladorEn = LeitorEnlacesConfig.getInstance(); 
 		this.porta = manipuladorRot.getPorta(this.id); 
 		this.IP = manipuladorRot.getIP(this.id); 
 		this.tabela = new TabelaRoteamento(this.id); 
