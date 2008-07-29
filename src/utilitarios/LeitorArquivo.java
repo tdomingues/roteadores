@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import excecoes.LeitorArquivosException;
+import excecoes.LeitorArquivoException;
 
 
 public class LeitorArquivo {
@@ -17,7 +17,7 @@ public class LeitorArquivo {
 	}
 	
 	
-	public static List<String> leiaArquivo(String nome) throws LeitorArquivosException {
+	public static List<String> leiaArquivo(String nome) throws LeitorArquivoException {
 		
 		try {
 			List<String> result = new ArrayList<String>();
@@ -30,7 +30,7 @@ public class LeitorArquivo {
 			}
 			return result;
 		} catch ( IOException ioe ) {
-			throw new LeitorArquivosException ("Nao foi possivel ler o arquivo " + nome);
+			throw new LeitorArquivoException ("Nao foi possivel ler o arquivo " + nome);
 		}
 		
 	}

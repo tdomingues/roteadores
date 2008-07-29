@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.StringTokenizer;
 
+
+
 import excecoes.ServidorException;
 
 
@@ -27,7 +29,7 @@ public class Servidor extends Thread {
 		while (true) {
 			try {
 								
-				sleep(100); //Tivemos que fazer isso para evitar sobrecarga de processamento desnecessario
+				sleep(5); //Tivemos que fazer isso para evitar sobrecarga de processamento desnecessario
 				
 				
 				
@@ -61,13 +63,20 @@ public class Servidor extends Thread {
 										
 				}
 			} catch (InterruptedException e) {
-				new ServidorException("Interrupcao nao esperada no servidor");
+				
+				
+				System.out.println("Interrupcao nao esperada no servidor");
+				System.exit(1);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
+				System.exit(1);
 			} catch (SocketException e) {
 				e.printStackTrace();
+				System.out.println("Nao foi possivel inicializar: O roteador com o ID informado ja esta em uso.");
+				System.exit(1);
 			} catch (IOException e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}

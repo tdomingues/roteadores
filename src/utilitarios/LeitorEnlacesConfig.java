@@ -10,8 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-public class LeitorEnlacesConfig {
-	final int INFINITY = 999;
+
+
+public class LeitorEnlacesConfig{
+	final int INFINITY = 99;
 	
 	
 	private List<String> conteudo; 
