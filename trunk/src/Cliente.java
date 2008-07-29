@@ -19,7 +19,7 @@ import java.net.UnknownHostException;
  */
 public class Cliente extends Thread {
 	
-	final int INFINITY = 99;
+	final int INFINITY = 999;
 	
 	private String ipServidor;
 	private String portaServidor;

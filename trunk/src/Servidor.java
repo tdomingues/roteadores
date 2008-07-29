@@ -47,8 +47,11 @@ public class Servidor extends Thread {
 					
 					servidorSocket.receive( pacoteEntrada );
 					
+					
 					InetAddress address = pacoteEntrada.getAddress();
 					int porta = pacoteEntrada.getPort();
+					System.out.println("Recebendo dados do vizinho " + address.getHostAddress()+":"+ porta);
+					
 			
 					
 					String dadosRecebidos = new String( pacoteEntrada.getData() , pacoteEntrada.getOffset() , pacoteEntrada.getLength() );
@@ -86,7 +89,7 @@ public class Servidor extends Thread {
 		StringTokenizer st = new StringTokenizer(dadosRecebidos, "$"); 
 		String idTabela = st.nextToken();
 		roteador.setVizinhoLigado(idTabela);
-		TabelaRoteamento tabela = new TabelaRoteamento(idTabela);
+		Tabela tabela = new Tabela(idTabela);
 		roteador.atualizarTabela(idTabela, st.nextToken());
 	}
 
