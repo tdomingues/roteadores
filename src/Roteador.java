@@ -19,11 +19,11 @@ import utilitarios.LeitorRoteadorConfig;
 
 
 public class Roteador extends TimerTask {
-	final int INFINITY = 99;
+	final int INFINITY = 999;
 	private String id;
 	private String porta;
 	private String IP;
-	private TabelaRoteamento tabela; 
+	private Tabela tabela; 
 	private LeitorRoteadorConfig manipuladorRot;
 	private LeitorEnlacesConfig manipuladorEn;
 	private Servidor server;
@@ -38,7 +38,7 @@ public class Roteador extends TimerTask {
 		manipuladorEn = LeitorEnlacesConfig.getInstance(); 
 		this.porta = manipuladorRot.getPorta(this.id); 
 		this.IP = manipuladorRot.getIP(this.id); 
-		this.tabela = new TabelaRoteamento(this.id); 
+		this.tabela = new Tabela(this.id); 
 		tabela.inicializar(); 
 		statusVizinhos = new HashMap<String, String>();
 		rotas = new HashMap<String, String>();
@@ -94,6 +94,7 @@ public class Roteador extends TimerTask {
 			if ( statusVizinhos.get(id).equals("ligado") ) {
 				
 				Cliente c = new Cliente(this, id, manipuladorRot.getIP(id), manipuladorRot.getPorta(id));
+				System.out.println("Enviando pacote para Vizinho ID: " + id );
 			}
 			
 		}
@@ -135,7 +136,7 @@ public class Roteador extends TimerTask {
 	}
 	
 	
-	public TabelaRoteamento getTabela() {
+	public Tabela getTabela() {
 		return tabela;
 	}
 	

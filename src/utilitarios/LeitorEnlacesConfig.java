@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 
 
 public class LeitorEnlacesConfig{
-	final int INFINITY = 99;
+	final int INFINITY = 999;
 	
 	
 	private List<String> conteudo; 

@@ -12,8 +12,8 @@ import utilitarios.LeitorRoteadorConfig;
 
 
 
-public class TabelaRoteamento{
-	final int INFINITY = 99;
+public class Tabela{
+	final int INFINITY = 999;
 	
 	private String idTab;
 
@@ -24,7 +24,7 @@ public class TabelaRoteamento{
 	private Map<String, Integer> mapaDistancias;
 
 	
-	public TabelaRoteamento(String id) {
+	public Tabela(String id) {
 		manipuladorRot = LeitorRoteadorConfig.getInstance();
 		manipuladorEn = LeitorEnlacesConfig.getInstance();
 		mapaDistancias = new HashMap<String, Integer>();
