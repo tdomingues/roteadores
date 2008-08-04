@@ -1,12 +1,18 @@
 package utilitarios;
 
 
+
+
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+
+import sistema.No;
 
 
 
@@ -68,6 +74,20 @@ public class LeitorRoteadorConfig {
 	
 	public Set getIdRoteadores(){
 		return mapa.keySet();
+	}
+	
+	
+	public List<No> lerNos(){
+		List<No> nos = new LinkedList<No>();
+		Set idRoteadores = this.getIdRoteadores();
+		Iterator roteadoresIt = idRoteadores.iterator();
+		while(roteadoresIt.hasNext()){
+			String id = (String) roteadoresIt.next();
+			String porta = this.getPorta(id);
+			String ip = this.getIP(id);
+			nos.add(new No(id, porta, ip));
+		}
+		return nos;
 	}
 	
 }

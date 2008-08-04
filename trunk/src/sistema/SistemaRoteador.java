@@ -1,3 +1,5 @@
+package sistema;
+
 import java.util.Scanner;
 
 import excecoes.LeitorArquivoException;

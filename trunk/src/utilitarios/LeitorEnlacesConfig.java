@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import sistema.No;
+
 
 
 public class LeitorEnlacesConfig{
@@ -97,4 +99,7 @@ public class LeitorEnlacesConfig{
 		List<String> vizinhos = this.getVizinhos(id1);
 		return vizinhos.contains(id2);
 	}
+
+
+
 }

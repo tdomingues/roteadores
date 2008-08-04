@@ -1,10 +1,14 @@
+package sistema;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,9 +27,12 @@ public class Roteador extends TimerTask {
 	private String id;
 	private String porta;
 	private String IP;
-	private Tabela tabela; 
-	private LeitorRoteadorConfig manipuladorRot;
-	private LeitorEnlacesConfig manipuladorEn;
+	private Tabela tabela;
+	private List<Vizinho> vizinhos;
+	private List<No> nos;
+	//private LeitorRoteadorConfig manipuladorRot;
+	//private LeitorEnlacesConfig manipuladorEn;
+	
 	private Servidor server;
 	
 	private Map<String,String> statusVizinhos;
@@ -34,12 +41,19 @@ public class Roteador extends TimerTask {
 
 	public Roteador(String id) {
 		this.id = id;
-		manipuladorRot = LeitorRoteadorConfig.getInstance(); 
-		manipuladorEn = LeitorEnlacesConfig.getInstance(); 
-		this.porta = manipuladorRot.getPorta(this.id); 
-		this.IP = manipuladorRot.getIP(this.id); 
+		
+		
+		LeitorRoteadorConfig leitorRoteadorConfig = LeitorRoteadorConfig.getInstance();
+		
+		this.porta = leitorRoteadorConfig.getPorta(this.id); 
+		this.IP = leitorRoteadorConfig.getIP(this.id);
+		
+		lerNos();
+		lerVizinhos();
+		
 		this.tabela = new Tabela(this.id); 
 		tabela.inicializar(); 
+		
 		statusVizinhos = new HashMap<String, String>();
 		rotas = new HashMap<String, String>();
 		inicializar();
@@ -56,6 +70,23 @@ public class Roteador extends TimerTask {
 		
 	}
 	
+	private void lerNos(){
+		LeitorRoteadorConfig leitorRoteadorConfig = LeitorRoteadorConfig.getInstance();
+		this.nos = leitorRoteadorConfig.lerNos();
+	}
+	private void lerVizinhos(){
+		this.vizinhos = new LinkedList<Vizinho>();
+		LeitorEnlacesConfig leitorEnlacesConfig = LeitorEnlacesConfig.getInstance();
+		List vizinhosIds = leitorEnlacesConfig.getVizinhos(id);
+		for(No no: nos){
+			if(vizinhosIds.contains(no.getId())){
+				vizinhos.add(new Vizinho(no,leitorEnlacesConfig.getCusto(id, no.getId()), false));
+			}
+		}
+		
+	}
+	
+
 	
 	private void inicializarRotas() {
 		for ( String roteador : todosOsRoteadores() ) {
@@ -66,7 +97,7 @@ public class Roteador extends TimerTask {
 	
 	public void run(){
 		enviaParaVizinhos(); 
-		System.out.println( horaSistema() + " tabela: " + getTabelaImprimir() );
+		//System.out.println( horaSistema() + " tabela: " + getTabelaImprimir() );
 	}
 	
 	
@@ -89,20 +120,19 @@ public class Roteador extends TimerTask {
 	
 	
 	public void enviaParaVizinhos() {
-		List<String> vizinhos = getVizinhos();
-		for ( String id : vizinhos ) {
-			if ( statusVizinhos.get(id).equals("ligado") ) {
+		
+		for (Vizinho vizinho : vizinhos ) {
+			if ( vizinho.isLigado() ) {
 				
-				Cliente c = new Cliente(this, id, manipuladorRot.getIP(id), manipuladorRot.getPorta(id));
-				System.out.println("Enviando pacote para Vizinho ID: " + id );
+				Cliente cliente = new Cliente(this, vizinho.getId(), vizinho.getIp(), vizinho.getPorta());
 			}
 			
 		}
 	}
 	
 	
-	public List<String> getVizinhos() {
-		return manipuladorEn.getVizinhos(this.id);
+	public List<Vizinho> getVizinhos() {
+		return this.vizinhos;
 	}
 	
 	
@@ -154,6 +184,7 @@ public class Roteador extends TimerTask {
 	public void atualizarTabela(String idVizinho, String dados) {
 		
 		StringTokenizer st = new StringTokenizer(dados);
+		boolean atualizou =  false;
 		
 		for ( String roteador : todosOsRoteadores() ) {
 			StringTokenizer distEsalt = new StringTokenizer(st.nextToken(), "-");
@@ -175,7 +206,9 @@ public class Roteador extends TimerTask {
 					if ( distanciaFisica < getDistancia(roteador) ) { 
 						if ( !ligado ) {
 							setDistancia( roteador, INFINITY ); 
-							this.adicionarRota(roteador, null); 
+							this.adicionarRota(roteador, null);
+							//atualizou = true;
+							System.out.println("1");
 							continue; 
 						}
 						
@@ -195,6 +228,7 @@ public class Roteador extends TimerTask {
 						|| (rotas.get(roteador) == null) ) {
 					setDistancia( roteador, INFINITY );
 					rotas.put( roteador, null);
+					//atualizou = true;
 				}
 
 				
@@ -213,10 +247,15 @@ public class Roteador extends TimerTask {
 					
 					setDistancia(roteador, distanciaTabelaRemota + distanciaVizinho);
 					this.adicionarRota(roteador, idVizinho);
+					atualizou = true;
+					System.out.println("2");
 					
 				}
 
 			}
+		}
+		if(atualizou){
+			System.out.println( horaSistema() + " tabela: " + getTabelaImprimir() );
 		}
 		
 	}

@@ -1,3 +1,4 @@
+package sistema;
 
 
 import java.util.HashMap;
@@ -19,14 +20,13 @@ public class Tabela{
 
 	private LeitorRoteadorConfig manipuladorRot;
 
-	private LeitorEnlacesConfig manipuladorEn;
+	
 
 	private Map<String, Integer> mapaDistancias;
 
 	
 	public Tabela(String id) {
 		manipuladorRot = LeitorRoteadorConfig.getInstance();
-		manipuladorEn = LeitorEnlacesConfig.getInstance();
 		mapaDistancias = new HashMap<String, Integer>();
 		this.idTab = id;
 	}
