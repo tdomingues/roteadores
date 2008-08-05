@@ -4,6 +4,7 @@ package utilitarios;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,15 +78,16 @@ public class LeitorRoteadorConfig {
 	}
 	
 	
-	public List<No> lerNos(){
-		List<No> nos = new LinkedList<No>();
+	public Map<String,No> lerNos(){
+		Map<String,No> nos = new HashMap<String,No>();
+		
 		Set idRoteadores = this.getIdRoteadores();
 		Iterator roteadoresIt = idRoteadores.iterator();
 		while(roteadoresIt.hasNext()){
 			String id = (String) roteadoresIt.next();
 			String porta = this.getPorta(id);
 			String ip = this.getIP(id);
-			nos.add(new No(id, porta, ip));
+			nos.put(id,new No(id, porta, ip));
 		}
 		return nos;
 	}
