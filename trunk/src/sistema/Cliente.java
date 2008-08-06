@@ -46,7 +46,7 @@ public class Cliente extends Thread {
 			InetAddress address = InetAddress.getByName(this.getIpServidor());
 			
 			DatagramSocket clienteSocket = new DatagramSocket();
-			clienteSocket.setSoTimeout(6000);
+			clienteSocket.setSoTimeout(4000);
 			
 			
 			byte[] bufEntrada = new byte[1024];
@@ -64,7 +64,7 @@ public class Cliente extends Thread {
 			
 			
 			clienteSocket.send(pacoteSaida);
-			
+			//System.out.println("enviei...");			
 			
 			DatagramPacket pacoteEntrada = new DatagramPacket(bufEntrada, bufEntrada.length);
 			

@@ -11,29 +11,34 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import sistema.No;
+import sistema.Roteador;
+import sistema.Vizinho;
 
 
 
 public class LeitorEnlacesConfig{
 	final int INFINITY = 999;
-	
+	private Roteador roteador;
 	
 	private List<String> conteudo; 
 	private final String nome = "enlaces.config";
 	private Map<List, String> mapa; 
 	private static LeitorEnlacesConfig instancia;
+	private Map<String, Vizinho> vizinhos;
 	
 	
-	private LeitorEnlacesConfig(){
+	private LeitorEnlacesConfig(Roteador roteador){
 		mapa = new HashMap<List, String>();
+		this.roteador = roteador;
 		conteudo = LeitorArquivo.leiaArquivo(nome);
 		this.mapeiaConteudo();
+		this.lerVizinhos();
 	}
 	
 	
-	public static LeitorEnlacesConfig getInstance(){
+	public static LeitorEnlacesConfig getInstance(Roteador roteador){
 		if (instancia == null){
-			instancia = new LeitorEnlacesConfig();
+			instancia = new LeitorEnlacesConfig(roteador);
 		}
 		return instancia;
 		
@@ -54,7 +59,7 @@ public class LeitorEnlacesConfig{
 	}
 	
 	
-	public List getVizinhos(String id) {
+	private List<String> getIdVizinhos(String id) {
 		List<String> vizinhos = new ArrayList<String>();
 		Set <List> chaves = mapa.keySet();
 		Iterator it = chaves.iterator();
@@ -71,7 +76,7 @@ public class LeitorEnlacesConfig{
 	}
 	
 	
-	public int getCusto(String id1, String id2){
+	private int getCusto(String id1, String id2){
 		if (id1.equals(id2)) 
 			return 0;
 
@@ -92,12 +97,36 @@ public class LeitorEnlacesConfig{
 	}
 	
 	
-	public boolean ehVizinho(String id1, String id2){
+	private boolean ehVizinho(String id1, String id2){
 		if (id1.equals(id2))
 			return false;
 		
-		List<String> vizinhos = this.getVizinhos(id1);
+		List<String> vizinhos = this.getIdVizinhos(id1);
 		return vizinhos.contains(id2);
+	}
+	
+	private void lerVizinhos() {
+		this.vizinhos = new HashMap<String, Vizinho>();
+		LeitorRoteadorConfig leitorRoteadorConfig = LeitorRoteadorConfig.getInstance();
+		List<String> vizinhosIds = this.getIdVizinhos(this.roteador.getId());
+		
+		Map<String, No> roteadores = leitorRoteadorConfig.getRoteadores();
+		
+		Iterator roteadoresIt = roteadores.keySet().iterator();
+		while (roteadoresIt.hasNext()) {
+			String roteadorId = (String) roteadoresIt.next();
+			if (vizinhosIds.contains(roteadorId)) {
+				vizinhos.put(roteadorId, new Vizinho(roteadores.get(roteadorId),
+						this.getCusto(this.roteador.getId(), roteadorId), false));
+			}
+		}
+		
+		
+
+	}
+	
+	public Map<String, Vizinho> getVizinhos(){
+		return this.vizinhos;
 	}
 
 
