@@ -8,7 +8,7 @@ import java.net.SocketException;
 import java.util.StringTokenizer;
 
 
-import excecoes.ServidorException;
+
 
 public class Servidor extends Thread {
 
@@ -45,8 +45,10 @@ public class Servidor extends Thread {
 					// para ele
 					// A thread do servidor fica bloqueada ate que algo seja
 					// recebido
+					System.out.println("estou esperando...");
 					servidorSocket.receive(pacoteEntrada);
-
+                    
+					System.out.println("recebi...");
 					// Quando chega algum pacote ele sera tratado
 
 					// eh obtido o ip e a porta do cliente que enviou o pacote
@@ -103,11 +105,11 @@ public class Servidor extends Thread {
 	}
 
 	private void lerTabela(String dadosRecebidos) {
-		StringTokenizer st = new StringTokenizer(dadosRecebidos, "$");
-		String idTabela = st.nextToken();
-		roteador.setVizinhoLigado(idTabela);
-		Tabela tabela = new Tabela(idTabela);
-		roteador.atualizarTabela(idTabela, st.nextToken());
+		StringTokenizer st = new StringTokenizer(dadosRecebidos, "#");
+		String vizinhoId = st.nextToken();
+		roteador.setVizinhoLigado(vizinhoId);
+		//Tabela tabela = new Tabela(this.roteador);
+		roteador.atualizarTabela(vizinhoId, st.nextToken());
 	}
 
 	public String getPorta() {

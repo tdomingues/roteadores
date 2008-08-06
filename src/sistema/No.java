@@ -36,7 +36,9 @@ public class No {
 		this.porta = porta;
 	}
     
-    
+    public String toStrint(){
+    	return this.getId();
+    }
 	
 	
 
