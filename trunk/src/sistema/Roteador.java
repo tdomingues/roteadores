@@ -13,7 +13,7 @@ import java.util.TimerTask;
 import utilitarios.LeitorEnlacesConfig;
 import utilitarios.LeitorRoteadorConfig;
 
-public class Roteador extends TimerTask{
+public class Roteador extends TimerTask {
 	final int INFINITY = 999;
 
 	private String id;
@@ -29,74 +29,73 @@ public class Roteador extends TimerTask{
 	private Map<String, No> roteadores;
 
 	private LeitorRoteadorConfig manipuladorRot;
+
 	private LeitorEnlacesConfig manipuladorEn;
 
 	private Servidor server;
 
-	
-
-	
-
 	public Roteador(String id) {
 		this.id = id;
+		
 
 		LeitorRoteadorConfig leitorRoteadorConfig = LeitorRoteadorConfig
 				.getInstance();
+		if(!leitorRoteadorConfig.roteadorExiste(id)){
+			System.out.println("Roteador inexistente");
+			System.exit(1);
+		}
 		this.roteadores = leitorRoteadorConfig.getRoteadores();
 		this.porta = leitorRoteadorConfig.getPorta(this.id);
 		this.IP = leitorRoteadorConfig.getIP(this.id);
-		
-		
+
 		LeitorEnlacesConfig leitorEnlacesConfig = LeitorEnlacesConfig
-		.getInstance(this);
+				.getInstance(this);
 		this.vizinhos = leitorEnlacesConfig.getVizinhos();
-		
-
-		
-
-		
 
 		this.tabela = new Tabela(this);
 		tabela.inicializar();
 
-		
-		
 		inicializar();
-		if (true) {
-			System.out.println(horaSistema() + " tabela: "
-					+ getTabelaImprimir());
-		}
+		imprimirTabela();
+
 	}
 
 	public void inicializar() {
-		
+
 		Timer timer = new Timer();
 		server = new Servidor(this);
 		server.start();
-		ligarVizinhos();
-		
-		timer.schedule(this, 300, 6000);
+		avisaVizinhos();
+
+		timer.schedule(this, 400, 8000);
 
 	}
-
-	
-
-	
-
-	
 
 	public void run() {
 		enviaParaVizinhos();
-		
+
 	}
 
-	private void ligarVizinhos() {
+	public void imprimirTabela() {
+		System.out.println(horaSistema() + " Imprimindo Tabela: "
+				+ getTabelaImprimir());
+		System.out.println();
+	}
+
+	private void avisaVizinhos() {
+		System.out.print(horaSistema()
+				+ ": Avisando aos vizinhos que fui ligado: ");
 		Iterator vizinhosIt = vizinhos.keySet().iterator();
-		while(vizinhosIt.hasNext()){
+		while (vizinhosIt.hasNext()) {
 			Vizinho vizinho = vizinhos.get(vizinhosIt.next());
-			vizinho.setLigado(true);
+
+			System.out.print(" < " + vizinho.getId() + " > ");
+			Cliente cliente = new Cliente(this, vizinho.getId(), vizinho
+					.getIp(), vizinho.getPorta());
+
 		}
-	
+		System.out.println();
+
 	}
 
 	public void setVizinhoLigado(String idVizinho) {
@@ -110,18 +109,19 @@ public class Roteador extends TimerTask{
 	}
 
 	public void enviaParaVizinhos() {
-		System.out.println(horaSistema() + ": Enviando tabela para vizinhos ...");
+		System.out.print(horaSistema()
+				+ ": Enviando Tabela para Vizinhos Ligados: ");
 		Iterator vizinhosIt = vizinhos.keySet().iterator();
 		while (vizinhosIt.hasNext()) {
 			Vizinho vizinho = vizinhos.get(vizinhosIt.next());
 			if (vizinho.isLigado()) {
-                System.out.println("vizinho " + vizinho.getId()); 
+				System.out.print(" < " + vizinho.getId() + " > ");
 				Cliente cliente = new Cliente(this, vizinho.getId(), vizinho
 						.getIp(), vizinho.getPorta());
 			}
 		}
+		System.out.println();
 
-		
 	}
 
 	public Map<String, Vizinho> getVizinhos() {
@@ -159,41 +159,39 @@ public class Roteador extends TimerTask{
 	public String geraTabelaString() {
 		String saida = this.getId() + "#";
 		int numeroRoteadores = this.roteadores.size();
-		for(int i=1; i <= numeroRoteadores; i ++){
+		for (int i = 1; i <= numeroRoteadores; i++) {
 			String noId = String.valueOf(i);
 			saida += this.tabela.getMapaDistancia().get(noId) + "-"
-			+ this.tabela.getMapaRotas().get(noId) + " ";
+					+ this.tabela.getMapaRotas().get(noId) + " ";
 		}
 		return saida;
 	}
 
 	public void atualizarTabela(String idCliente, String dados) {
-		
+
+		System.out.println(horaSistema() + ": Recebendo Tabela do Vizinho < "
+				+ idCliente + " >");
+
 		Vizinho cliente = vizinhos.get(idCliente);
 
 		StringTokenizer st = new StringTokenizer(dados);
-		boolean atualizou = false;
-        
-		//Iterator roteadoresIt = roteadores.keySet().iterator();
+
 		int numeroRoteadores = roteadores.size();
-		
-		for(int i = 1; i <= numeroRoteadores; i++){
-			
-		
-        
-		
-            No roteador = roteadores.get(String.valueOf(i));           
-        	StringTokenizer distEsalt = new StringTokenizer(st.nextToken(), "-");
+
+		for (int i = 1; i <= numeroRoteadores; i++) {
+
+			No roteador = roteadores.get(String.valueOf(i));
+			StringTokenizer distEsalt = new StringTokenizer(st.nextToken(), "-");
 
 			int distanciaTabelaRemota = Integer.parseInt(distEsalt.nextToken());
 
 			String proxSalto = distEsalt.nextToken();
 
 			if (!roteador.getId().equals(this.id)) {
-                
-				if(vizinhos.containsKey(roteador.getId())){
-				    Vizinho vizinho = vizinhos.get(roteador.getId());
-          
+
+				if (vizinhos.containsKey(roteador.getId())) {
+					Vizinho vizinho = vizinhos.get(roteador.getId());
+
 					int distanciaFisica = vizinho.getCusto();
 
 					boolean ligado = vizinho.isLigado();
@@ -202,8 +200,7 @@ public class Roteador extends TimerTask{
 						if (!ligado) {
 							setDistancia(roteador.getId(), INFINITY);
 							this.adicionarRota(roteador, null);
-							// atualizou = true;
-							
+
 							continue;
 						}
 
@@ -212,18 +209,19 @@ public class Roteador extends TimerTask{
 							this.adicionarRota(roteador, cliente.getNo());
 
 						} else {
-							this.adicionarRota(roteador,roteador);
+							this.adicionarRota(roteador, roteador);
 						}
 					}
 
 				}
 
 				if ((distanciaTabelaRemota == INFINITY && idCliente
-						.equals(this.tabela.getMapaRotas().get(roteador.getId())))
+						.equals(this.tabela.getMapaRotas()
+								.get(roteador.getId())))
 						|| (this.tabela.getMapaRotas().get(roteador.getId()) == null)) {
 					setDistancia(roteador.getId(), INFINITY);
 					this.tabela.getMapaRotas().put(roteador.getId(), null);
-					// atualizou = true;
+
 				}
 
 				int distanciaTabelaLocal = getDistancia(roteador.getId());
@@ -239,20 +237,11 @@ public class Roteador extends TimerTask{
 					setDistancia(roteador.getId(), distanciaTabelaRemota
 							+ distanciaVizinho);
 					this.adicionarRota(roteador, cliente.getNo());
-					atualizou = true;
-					System.out.println("2");
 
 				}
 
 			}
 		}
-		if (true) {
-			System.out.println(horaSistema() + " Tabela: "
-					+ getTabelaImprimir());
-		}
-
-     
-	
 
 	}
 
@@ -274,24 +263,23 @@ public class Roteador extends TimerTask{
 	}
 
 	public void setDistancia(String id, int valor) {
-		tabela.setDistancia(id, valor);
-		System.out.println(horaSistema() + " Tabela: "
-				+ getTabelaImprimir());
+		boolean atualizou = tabela.setDistancia(id, valor);
+		if (atualizou) {
+			imprimirTabela();
+		}
 	}
 
-	
-
 	public void adicionarRota(No destino, No proximoSalto) {
-		String destinoId; 
+		String destinoId;
 		String proximoSaltoId;
-		if(destino != null){
+		if (destino != null) {
 			destinoId = destino.getId();
-		}else{
+		} else {
 			destinoId = null;
 		}
-		if(proximoSalto != null){
+		if (proximoSalto != null) {
 			proximoSaltoId = proximoSalto.getId();
-		}else{
+		} else {
 			proximoSaltoId = null;
 		}
 		this.tabela.getMapaRotas().put(destinoId, proximoSaltoId);
@@ -307,8 +295,7 @@ public class Roteador extends TimerTask{
 
 	public void setRotasVizinhoNull(String idVizinho) {
 		this.tabela.setRotasVizinhoNull(idVizinho);
-		
+
 	}
 
-	
 }

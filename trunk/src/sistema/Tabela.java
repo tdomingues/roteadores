@@ -66,17 +66,36 @@ public class Tabela{
 		String saida = "\n" + "Roteador " + this.roteador.getId() + "\n";
 		int numRot = this.roteador.getRoteadores().size();
 		for (int i = 1; i < numRot + 1; i++) {
-			saida += "|  " + i + "  ";
+			saida += "|" + formata(String.valueOf(i));
 		}
-		saida += "|" + "\n" + "| ";
+		saida += "|" + "\n" 
+		       + "|";
 		for (int i = 1; i < numRot + 1; i++) {
-			saida += mapaDistancias.get(String.valueOf(i)) + " | ";
+			saida += formata(String.valueOf(mapaDistancias.get(String.valueOf(i)))) + "|";
 		}
 
 		return saida;
 	}
 
-	
+	private String formata(String entrada){
+		String saida = entrada;
+		
+		if(entrada.length() == 5){
+			saida = entrada;
+		}else if(entrada.length() == 4){
+			saida = entrada + " ";
+		}else if(entrada.length() == 3){
+			saida =  " " + entrada + " ";
+		}else if(entrada.length() == 2){
+			saida =  "  " + entrada + " ";
+		}else if(entrada.length() == 1){
+			saida =  "  " + entrada + "  ";
+		}
+		
+		return saida;
+		
+		
+	}
 	
 
 	
@@ -95,8 +114,13 @@ public class Tabela{
 	}
 
 	
-	public void setDistancia(String roteador, int valor) {
+	public boolean setDistancia(String roteador, int valor) {
+		boolean atualizou = false;
+		if(mapaDistancias.get(roteador) != valor){
+			atualizou = true;
+		}
 		mapaDistancias.put(roteador, valor);
+		return atualizou;
 	}
 	
 	
