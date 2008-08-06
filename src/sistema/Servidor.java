@@ -45,24 +45,26 @@ public class Servidor extends Thread {
 					// para ele
 					// A thread do servidor fica bloqueada ate que algo seja
 					// recebido
-					System.out.println("estou esperando...");
+					
 					servidorSocket.receive(pacoteEntrada);
                     
-					System.out.println("recebi...");
+					
 					// Quando chega algum pacote ele sera tratado
 
 					// eh obtido o ip e a porta do cliente que enviou o pacote
 					InetAddress address = pacoteEntrada.getAddress();
 					int porta = pacoteEntrada.getPort();
 
-					// sera impresso na tela um aviso de recebimento de novo
-					// pacote
-					avisaChegadaDePacote(address.getHostAddress(), porta);
-
+					
 					// a tabela em forma de string eh lida do pacote
 					String dadosRecebidos = new String(pacoteEntrada.getData(),
 							pacoteEntrada.getOffset(), pacoteEntrada
 									.getLength());
+					
+//					 sera impresso na tela um aviso de recebimento de novo
+					// pacote
+					//avisaChegadaDePacote(dadosRecebidos);
+
 
 					this.lerTabela(dadosRecebidos);
 
@@ -99,16 +101,12 @@ public class Servidor extends Thread {
 		}
 	}
 
-	private void avisaChegadaDePacote(String ip, int porta) {
-		System.out.println("Recebendo dados do vizinho " + ip + ":" + porta);
 
-	}
 
 	private void lerTabela(String dadosRecebidos) {
 		StringTokenizer st = new StringTokenizer(dadosRecebidos, "#");
 		String vizinhoId = st.nextToken();
 		roteador.setVizinhoLigado(vizinhoId);
-		//Tabela tabela = new Tabela(this.roteador);
 		roteador.atualizarTabela(vizinhoId, st.nextToken());
 	}
 
