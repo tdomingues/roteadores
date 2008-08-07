@@ -19,6 +19,17 @@ public class Servidor extends Thread {
 
 	}
 
+	public String getPorta() {
+		return porta;
+	}
+
+	private void lerTabela(String dadosRecebidos) {
+		StringTokenizer st = new StringTokenizer(dadosRecebidos, "#");
+		String vizinhoId = st.nextToken();
+		roteador.setVizinhoLigado(vizinhoId);
+		roteador.atualizarTabela(vizinhoId, st.nextToken());
+	}
+
 	public void run() {
 		while (true) {
 			try {
@@ -86,17 +97,6 @@ public class Servidor extends Thread {
 				System.exit(1);
 			}
 		}
-	}
-
-	private void lerTabela(String dadosRecebidos) {
-		StringTokenizer st = new StringTokenizer(dadosRecebidos, "#");
-		String vizinhoId = st.nextToken();
-		roteador.setVizinhoLigado(vizinhoId);
-		roteador.atualizarTabela(vizinhoId, st.nextToken());
-	}
-
-	public String getPorta() {
-		return porta;
 	}
 
 	public void setPorta(String porta) {

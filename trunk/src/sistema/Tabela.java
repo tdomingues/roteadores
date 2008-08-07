@@ -25,38 +25,6 @@ public class Tabela {
 		this.leitorRoteadorConfig = LeitorRoteadorConfig.getInstance();
 	}
 
-	public void inicializar() {
-
-		Iterator it = leitorRoteadorConfig.getIdRoteadores().iterator();
-		while (it.hasNext()) {
-
-			String id = (String) it.next();
-			if (id.equals(this.roteador.getId())) {
-				mapaDistancias.put(id, 0);
-				mapaRotas.put(id, id);
-			} else {
-				mapaDistancias.put(id, INFINITY);
-				mapaRotas.put(id, null);
-			}
-		}
-	}
-
-	public String toString() {
-		String saida = "\n" + "Roteador " + this.roteador.getId() + "\n";
-		int numRot = this.roteador.getRoteadores().size();
-		for (int i = 1; i < numRot + 1; i++) {
-			saida += "|" + formata(String.valueOf(i));
-		}
-		saida += "|" + "\n" + "|";
-		for (int i = 1; i < numRot + 1; i++) {
-			saida += formata(String.valueOf(mapaDistancias.get(String
-					.valueOf(i))))
-					+ "|";
-		}
-
-		return saida;
-	}
-
 	private String formata(String entrada) {
 		String saida = entrada;
 
@@ -80,17 +48,44 @@ public class Tabela {
 		return mapaDistancias.get(idDestino);
 	}
 
+	public Map getMapaDistancia() {
+		return this.mapaDistancias;
+	}
+
+	public Map<String, String> getMapaRotas() {
+		return mapaRotas;
+	}
+
+	public void inicializar() {
+
+		Iterator it = leitorRoteadorConfig.getIdRoteadores().iterator();
+		while (it.hasNext()) {
+
+			String id = (String) it.next();
+			if (id.equals(this.roteador.getId())) {
+				mapaDistancias.put(id, 0);
+				mapaRotas.put(id, id);
+			} else {
+				mapaDistancias.put(id, INFINITY);
+				mapaRotas.put(id, null);
+			}
+		}
+	}
+
 	public boolean setDistancia(String roteador, int valor) {
 		boolean atualizou = false;
 		if (mapaDistancias.get(roteador) != valor) {
 			atualizou = true;
 		}
+		if(valor > this.INFINITY){
+			valor = this.INFINITY;
+		}
 		mapaDistancias.put(roteador, valor);
 		return atualizou;
 	}
 
-	public Map getMapaDistancia() {
-		return this.mapaDistancias;
+	public void setMapaRotas(Map<String, String> mapaRotas) {
+		this.mapaRotas = mapaRotas;
 	}
 
 	// Seta todas as rotas que tem como proximo salto o vizinho que foi
@@ -108,12 +103,20 @@ public class Tabela {
 		}
 	}
 
-	public Map<String, String> getMapaRotas() {
-		return mapaRotas;
-	}
+	public String toString() {
+		String saida = "\n" + "Roteador " + this.roteador.getId() + "\n";
+		int numRot = this.roteador.getRoteadores().size();
+		for (int i = 1; i < numRot + 1; i++) {
+			saida += "|" + formata(String.valueOf(i));
+		}
+		saida += "|" + "\n" + "|";
+		for (int i = 1; i < numRot + 1; i++) {
+			saida += formata(String.valueOf(mapaDistancias.get(String
+					.valueOf(i))))
+					+ "|";
+		}
 
-	public void setMapaRotas(Map<String, String> mapaRotas) {
-		this.mapaRotas = mapaRotas;
+		return saida;
 	}
 
 }
