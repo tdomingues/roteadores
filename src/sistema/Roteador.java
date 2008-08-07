@@ -53,112 +53,41 @@ public class Roteador extends TimerTask {
 
 	}
 
-	public void inicializar() {
-
-		Timer timer = new Timer();
-		server = new Servidor(this);
-		server.start();
-		avisaVizinhos();
-
-		timer.schedule(this, 400, 8000);
-
+	public void adicionaRota(No destino, No proximoSalto) {
+		String destinoId;
+		String proximoSaltoId;
+		if (destino != null) {
+			destinoId = destino.getId();
+		} else {
+			destinoId = null;
+		}
+		if (proximoSalto != null) {
+			proximoSaltoId = proximoSalto.getId();
+		} else {
+			proximoSaltoId = null;
+		}
+		this.tabela.getMapaRotas().put(destinoId, proximoSaltoId);
 	}
 
-	public void run() {
-		enviaParaVizinhos();
-
-	}
-
-	public void imprimirTabela() {
-		System.out.println(horaSistema() + " Imprimindo Tabela: "
-				+ tabela.toString());
-		System.out.println();
-	}
-
-	private void avisaVizinhos() {
-		System.out.print(horaSistema()
-				+ ": Avisando aos vizinhos que fui ligado: ");
-		Iterator vizinhosIt = vizinhos.keySet().iterator();
-		while (vizinhosIt.hasNext()) {
-			Vizinho vizinho = vizinhos.get(vizinhosIt.next());
-
-			System.out.print(" < " + vizinho.getId() + " > ");
-			Cliente cliente = new Cliente(this, vizinho.getId(), vizinho
-					.getIp(), vizinho.getPorta());
+	public boolean atualizaEstimativa(Vizinho vizinho, No destino, int custo) {
+		boolean atualizou = false;
+		int novoCusto = vizinho.getCusto() + custo;
+		int custoAtual = this.tabela.getDistancia(destino.getId());
+		// Se o proximo salto para o destino eh o meu vizinho, entao sempre
+		// atualizo, para o caso de um aumento de custo no enlace
+		// Senao eu so atualizo se o custo for menor
+		String proximoSalto = tabela.getMapaRotas().get(destino.getId());
+		if (proximoSalto != null && proximoSalto.equals(vizinho.getId())) {
+			atualizou = tabela.setDistancia(destino.getId(), novoCusto);
+			adicionaRota(destino, vizinho.getNo());
+		} else if (novoCusto < custoAtual) {
+			atualizou = tabela.setDistancia(destino.getId(), novoCusto);
+			adicionaRota(destino, vizinho.getNo());
 
 		}
-		System.out.println();
 
-	}
+		return atualizou;
 
-	public void setVizinhoLigado(String idVizinho) {
-		Vizinho vizinho = vizinhos.get(idVizinho);
-		vizinho.setLigado(true);
-	}
-
-	public void enviaParaVizinhos() {
-		System.out.print(horaSistema()
-				+ ": Enviando Tabela para Vizinhos Ligados: ");
-		Iterator vizinhosIt = vizinhos.keySet().iterator();
-		while (vizinhosIt.hasNext()) {
-			Vizinho vizinho = vizinhos.get(vizinhosIt.next());
-			if (vizinho.isLigado()) {
-				System.out.print(" < " + vizinho.getId() + " > ");
-				Cliente cliente = new Cliente(this, vizinho.getId(), vizinho
-						.getIp(), vizinho.getPorta());
-			}
-		}
-		System.out.println();
-
-	}
-
-	public Map<String, Vizinho> getVizinhos() {
-		return this.vizinhos;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getIP() {
-		return IP;
-	}
-
-	public void setIP(String ip) {
-		this.IP = ip;
-	}
-
-	public String getPorta() {
-		return porta;
-	}
-
-	public void setPorta(String porta) {
-		this.porta = porta;
-	}
-
-	public Tabela getTabela() {
-		return tabela;
-	}
-
-	public String geraTabelaStringEnvenenada(String destinoId) {
-		String saida = this.getId() + "#";
-		int numeroRoteadores = this.roteadores.size();
-		for (int i = 1; i <= numeroRoteadores; i++) {
-			String roteadorId = String.valueOf(i);
-			String custo = this.tabela.getMapaDistancia().get(roteadorId).toString();
-			String proximoSaltoId = this.tabela.getMapaRotas().get(roteadorId);
-			// Se o proximo salto para um destino for o proprio roteador que
-			// estou enviando, entao envenena
-			if (proximoSaltoId != null && proximoSaltoId.equals(destinoId)) {
-				custo = String.valueOf(this.INFINITY);
-			}
-			saida += custo + " ";
-		}
-		return saida;
 	}
 
 	public void atualizarTabela(String idVizinho, String dados) {
@@ -202,18 +131,130 @@ public class Roteador extends TimerTask {
 
 	}
 
-	public boolean atualizaEstimativa(Vizinho vizinho, No destino, int custo) {
-		boolean atualizou = false;
-		int novoCusto = vizinho.getCusto() + custo;
-		int custoAtual = this.tabela.getDistancia(destino.getId());
-		if (novoCusto < custoAtual) {
-			atualizou = tabela.setDistancia(destino.getId(), novoCusto);
-			adicionaRota(destino, vizinho.getNo());
+	private void avisaVizinhos() {
+		System.out.print(horaSistema()
+				+ ": Avisando aos vizinhos que fui ligado: ");
+		Iterator vizinhosIt = vizinhos.keySet().iterator();
+		while (vizinhosIt.hasNext()) {
+			Vizinho vizinho = vizinhos.get(vizinhosIt.next());
+
+			System.out.print(" < " + vizinho.getId() + " > ");
+			Cliente cliente = new Cliente(this, vizinho.getId(), vizinho
+					.getIp(), vizinho.getPorta());
 
 		}
+		System.out.println();
 
-		return atualizou;
+	}
 
+	public void enviaParaVizinhos() {
+		System.out.print(horaSistema()
+				+ ": Enviando Tabela para Vizinhos Ligados: ");
+		Iterator vizinhosIt = vizinhos.keySet().iterator();
+		while (vizinhosIt.hasNext()) {
+			Vizinho vizinho = vizinhos.get(vizinhosIt.next());
+			if (vizinho.isLigado()) {
+				System.out.print(" < " + vizinho.getId() + " > ");
+				Cliente cliente = new Cliente(this, vizinho.getId(), vizinho
+						.getIp(), vizinho.getPorta());
+			}
+		}
+		System.out.println();
+
+	}
+
+	public String geraTabelaStringEnvenenada(String destinoId) {
+		String saida = this.getId() + "#";
+		int numeroRoteadores = this.roteadores.size();
+		for (int i = 1; i <= numeroRoteadores; i++) {
+			String roteadorId = String.valueOf(i);
+			String custo = this.tabela.getMapaDistancia().get(roteadorId)
+					.toString();
+			String proximoSaltoId = this.tabela.getMapaRotas().get(roteadorId);
+			// Se o proximo salto para um destino for o proprio roteador que
+			// estou enviando, entao envenena
+			if (proximoSaltoId != null && proximoSaltoId.equals(destinoId)) {
+				custo = String.valueOf(this.INFINITY);
+			}
+			saida += custo + " ";
+		}
+		return saida;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getIP() {
+		return IP;
+	}
+
+	public String getPorta() {
+		return porta;
+	}
+
+	public Map<String, No> getRoteadores() {
+		return roteadores;
+	}
+
+	public Tabela getTabela() {
+		return tabela;
+	}
+
+	public Map<String, Vizinho> getVizinhos() {
+		return this.vizinhos;
+	}
+
+	public String horaSistema() {
+		GregorianCalendar calendario = new GregorianCalendar();
+		int hora = calendario.get(Calendar.HOUR_OF_DAY);
+		int min = calendario.get(Calendar.MINUTE);
+		int sec = calendario.get(Calendar.SECOND);
+		return hora + ":" + min + ":" + sec;
+
+	}
+
+	public void imprimirTabela() {
+		System.out.println(horaSistema() + " Imprimindo Tabela: "
+				+ tabela.toString());
+		System.out.println();
+	}
+
+	public void inicializar() {
+
+		Timer timer = new Timer();
+		server = new Servidor(this);
+		server.start();
+		avisaVizinhos();
+
+		timer.schedule(this, 400, 8000);
+
+	}
+
+	public void run() {
+		enviaParaVizinhos();
+
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setIP(String ip) {
+		this.IP = ip;
+	}
+
+	public void setPorta(String porta) {
+		this.porta = porta;
+	}
+
+	public void setRotasVizinhoNull(String idVizinho) {
+		this.tabela.setRotasVizinhoNull(idVizinho);
+
+	}
+
+	public void setRoteadores(Map<String, No> roteadores) {
+		this.roteadores = roteadores;
 	}
 
 	public void setVizinhoDesligado(String idVizinho) {
@@ -233,47 +274,9 @@ public class Roteador extends TimerTask {
 		}
 	}
 
-	public String horaSistema() {
-		GregorianCalendar calendario = new GregorianCalendar();
-		int hora = calendario.get(Calendar.HOUR_OF_DAY);
-		int min = calendario.get(Calendar.MINUTE);
-		int sec = calendario.get(Calendar.SECOND);
-		return hora + ":" + min + ":" + sec;
-
-	}
-
-	
-	
-
-	
-
-	public void adicionaRota(No destino, No proximoSalto) {
-		String destinoId;
-		String proximoSaltoId;
-		if (destino != null) {
-			destinoId = destino.getId();
-		} else {
-			destinoId = null;
-		}
-		if (proximoSalto != null) {
-			proximoSaltoId = proximoSalto.getId();
-		} else {
-			proximoSaltoId = null;
-		}
-		this.tabela.getMapaRotas().put(destinoId, proximoSaltoId);
-	}
-
-	public Map<String, No> getRoteadores() {
-		return roteadores;
-	}
-
-	public void setRoteadores(Map<String, No> roteadores) {
-		this.roteadores = roteadores;
-	}
-
-	public void setRotasVizinhoNull(String idVizinho) {
-		this.tabela.setRotasVizinhoNull(idVizinho);
-
+	public void setVizinhoLigado(String idVizinho) {
+		Vizinho vizinho = vizinhos.get(idVizinho);
+		vizinho.setLigado(true);
 	}
 
 }
