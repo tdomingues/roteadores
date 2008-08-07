@@ -53,7 +53,7 @@ public class Cliente extends Thread {
 			byte[] bufSaida = new byte[1024];
 			
 			
-			String tabela = roteador.geraTabelaString();
+			String tabela = roteador.geraTabelaStringEnvenenada(idServidor);
 			bufSaida= tabela.getBytes();
 			
 			
@@ -64,7 +64,7 @@ public class Cliente extends Thread {
 			
 			
 			clienteSocket.send(pacoteSaida);
-			//System.out.println("enviei...");			
+					
 			
 			DatagramPacket pacoteEntrada = new DatagramPacket(bufEntrada, bufEntrada.length);
 			
@@ -75,8 +75,7 @@ public class Cliente extends Thread {
 			
 		} catch (SocketTimeoutException e) {
 			roteador.setVizinhoDesligado(idServidor);
-			roteador.setDistancia(idServidor, INFINITY);
-			roteador.setRotasVizinhoNull(idServidor);
+			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -7,9 +7,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.StringTokenizer;
 
-
-
-
 public class Servidor extends Thread {
 
 	private Roteador roteador;
@@ -26,10 +23,6 @@ public class Servidor extends Thread {
 		while (true) {
 			try {
 
-				sleep(5); // Tivemos que fazer isso para evitar sobrecarga de
-				// processamento desnecessario
-				// Mas ainda acho que isso nao eh necessario
-
 				DatagramSocket servidorSocket = new DatagramSocket(Integer
 						.parseInt(getPorta()));
 
@@ -45,26 +38,23 @@ public class Servidor extends Thread {
 					// para ele
 					// A thread do servidor fica bloqueada ate que algo seja
 					// recebido
-					
+
 					servidorSocket.receive(pacoteEntrada);
-                    
-					
+
 					// Quando chega algum pacote ele sera tratado
 
 					// eh obtido o ip e a porta do cliente que enviou o pacote
 					InetAddress address = pacoteEntrada.getAddress();
 					int porta = pacoteEntrada.getPort();
 
-					
 					// a tabela em forma de string eh lida do pacote
 					String dadosRecebidos = new String(pacoteEntrada.getData(),
 							pacoteEntrada.getOffset(), pacoteEntrada
 									.getLength());
-					
-//					 sera impresso na tela um aviso de recebimento de novo
-					// pacote
-					//avisaChegadaDePacote(dadosRecebidos);
 
+					// sera impresso na tela um aviso de recebimento de novo
+					// pacote
+					// avisaChegadaDePacote(dadosRecebidos);
 
 					this.lerTabela(dadosRecebidos);
 
@@ -83,10 +73,7 @@ public class Servidor extends Thread {
 					}
 
 				}
-			} catch (InterruptedException e) {
 
-				System.out.println("Interrupcao nao esperada no servidor");
-				System.exit(1);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				System.exit(1);
@@ -100,8 +87,6 @@ public class Servidor extends Thread {
 			}
 		}
 	}
-
-
 
 	private void lerTabela(String dadosRecebidos) {
 		StringTokenizer st = new StringTokenizer(dadosRecebidos, "#");
