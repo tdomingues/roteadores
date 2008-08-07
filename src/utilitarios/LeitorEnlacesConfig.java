@@ -97,13 +97,6 @@ public class LeitorEnlacesConfig{
 	}
 	
 	
-	private boolean ehVizinho(String id1, String id2){
-		if (id1.equals(id2))
-			return false;
-		
-		List<String> vizinhos = this.getIdVizinhos(id1);
-		return vizinhos.contains(id2);
-	}
 	
 	private void lerVizinhos() {
 		this.vizinhos = new HashMap<String, Vizinho>();
