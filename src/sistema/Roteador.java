@@ -2,9 +2,7 @@ package sistema;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Timer;
@@ -27,10 +25,6 @@ public class Roteador extends TimerTask {
 	private Map<String, Vizinho> vizinhos;
 
 	private Map<String, No> roteadores;
-
-	private LeitorRoteadorConfig manipuladorRot;
-
-	private LeitorEnlacesConfig manipuladorEn;
 
 	private Servidor server;
 

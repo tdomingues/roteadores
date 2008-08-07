@@ -6,7 +6,7 @@ public class Vizinho{
 	private No no;
 	private int custo;
 	private boolean ligado;
-	private String id;
+	
 	
 	public Vizinho(No no, int custo, boolean ligado){
 		this.no = no;
