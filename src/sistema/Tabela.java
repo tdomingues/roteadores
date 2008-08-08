@@ -74,12 +74,16 @@ public class Tabela {
 
 	public boolean setDistancia(String roteador, int valor) {
 		boolean atualizou = false;
-		if (mapaDistancias.get(roteador) != valor) {
-			atualizou = true;
-		}
 		if(valor > this.INFINITY){
 			valor = this.INFINITY;
 		}
+		
+		int distanciaOrig = mapaDistancias.get(roteador).intValue();
+		
+		if (distanciaOrig != valor) {
+			atualizou = true;
+		}
+		
 		mapaDistancias.put(roteador, valor);
 		return atualizou;
 	}
