@@ -4,7 +4,16 @@ import java.util.Scanner;
 
 import excecoes.LeitorArquivoException;
 import excecoes.ServidorException;
-
+/**
+ * 
+ * Classe que representa o sistema de um roteador.
+ * Ela eh a responsavel por ler o id do roteador que se deseja iniciar
+ * e entao instancia um novo roteador com esse id.
+ * 
+ * @author Wilson
+ * @author Pablo
+ * 
+ */
 public class SistemaRoteador {
 
 	public static void main(String[] args) {

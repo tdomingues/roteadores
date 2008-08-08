@@ -12,6 +12,14 @@ import sistema.No;
 import sistema.Roteador;
 import sistema.Vizinho;
 
+/**
+ * 
+ * Classe utilizada para ler informacoes contidas no arquivo enlaces.config
+ * 
+ * @author Wilson
+ * @author Pablo
+ * 
+ */
 public class LeitorEnlacesConfig {
 	private static LeitorEnlacesConfig instancia;
 
@@ -35,6 +43,9 @@ public class LeitorEnlacesConfig {
 
 	private Map<String, Vizinho> vizinhos;
 
+	/**
+	 * @param roteador O roteador que cricou esse leitor
+	 */
 	private LeitorEnlacesConfig(Roteador roteador) {
 		mapa = new HashMap<List, String>();
 		this.roteador = roteador;
@@ -43,6 +54,13 @@ public class LeitorEnlacesConfig {
 		this.lerVizinhos();
 	}
 
+	/**
+	 * Retorna o custo do enlace entre dois roteadores.
+	 * Caso nao exista um enlace entre eles, sera retornado infinito.
+	 * @param id1 
+	 * @param id2
+	 * @return O custo do enlace
+	 */
 	private int getCusto(String id1, String id2) {
 		if (id1.equals(id2))
 			return 0;
@@ -62,6 +80,11 @@ public class LeitorEnlacesConfig {
 		return INFINITY;
 	}
 
+	/**
+	 * Retorna uma lista contendo todos ids os vizinhos de um roteador especifico
+	 * @param id O id do roteador que se deseja obter seus vizinhos
+	 * @return Uma lista contendo todos os ids dos vizinhos.
+	 */
 	private List<String> getIdVizinhos(String id) {
 		List<String> vizinhos = new ArrayList<String>();
 		Set<List> chaves = mapa.keySet();
@@ -78,10 +101,17 @@ public class LeitorEnlacesConfig {
 		return vizinhos;
 	}
 
+	/**
+	 * Retorna um mapa contendo todos os vizinhos do roteador que criou o leitor.
+	 * @return
+	 */
 	public Map<String, Vizinho> getVizinhos() {
 		return this.vizinhos;
 	}
 
+	/**
+	 * Metodo utilizado para ler todos os vizinhos do roteador que criou o leitor. 
+	 */
 	private void lerVizinhos() {
 		this.vizinhos = new HashMap<String, Vizinho>();
 		LeitorRoteadorConfig leitorRoteadorConfig = LeitorRoteadorConfig
@@ -102,6 +132,10 @@ public class LeitorEnlacesConfig {
 
 	}
 
+	/**
+	 * Metodo utilizado para a partir dos dados fornecidos pelo leitor de arquivo.
+	 * montar uma estrutura contendo as informacoes relevantes dos enlaces.
+	 */
 	private void mapeiaConteudo() {
 
 		for (int i = 0; i < conteudo.size(); i++) {
