@@ -9,6 +9,13 @@ import java.util.List;
 
 import excecoes.LeitorArquivoException;
 
+/**
+ * Classe utilizada para ler um arquivo
+ * 
+ * @author Wilson
+ * @author Pablo
+ * 
+ */
 public class LeitorArquivo {
 
 	public static List<String> leiaArquivo(String nome)
