@@ -1,6 +1,8 @@
-package sistema;
+
 
 import java.util.Scanner;
+
+import sistema.Roteador;
 
 import excecoes.LeitorArquivoException;
 import excecoes.ServidorException;
